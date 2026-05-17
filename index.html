@@ -2,14 +2,23 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
     <title>⭐ 星星账本</title>
     <style>
-        :root { --card-bg: rgba(0,0,0,0.32); --card-border: rgba(255,255,255,0.15); --text: #fff; --radius: 16px; }
+        :root {
+            --bg: #020210; --card-bg: rgba(0,0,0,0.32); --card-border: rgba(255,255,255,0.15);
+            --text: #fff; --input-bg: rgba(0,0,0,0.5); --input-border: rgba(255,255,255,0.3);
+            --input-text: #fff; --radius: 16px;
+        }
+        body.night { --bg: #020210; --card-bg: rgba(0,0,0,0.32); --card-border: rgba(255,255,255,0.15); --text: #fff; --input-bg: rgba(0,0,0,0.5); --input-border: rgba(255,255,255,0.3); --input-text: #fff; }
+        body.day { --bg: #f5f7fa; --card-bg: rgba(255,255,255,0.75); --card-border: rgba(0,0,0,0.1); --text: #2d3436; --input-bg: #fff; --input-border: #ccc; --input-text: #2d3436; }
+        body.simple-white { --bg: #ffffff; --card-bg: #ffffff; --card-border: #ddd; --text: #000; --input-bg: #fff; --input-border: #aaa; --input-text: #000; }
+        body.simple-black { --bg: #000000; --card-bg: rgba(0,0,0,0.7); --card-border: rgba(255,255,255,0.1); --text: #fff; --input-bg: rgba(255,255,255,0.1); --input-border: rgba(255,255,255,0.3); --input-text: #fff; }
+
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
-            background: #020210; color: var(--text); line-height: 1.5;
+            background: var(--bg); color: var(--text); line-height: 1.5;
             overflow-x: hidden; touch-action: pan-y pinch-zoom;
         }
         .cursor-active body { cursor: none; }
@@ -27,40 +36,28 @@
             position:fixed; border-radius:50%; border:2px solid rgba(255,255,255,0.7);
             pointer-events:none; z-index:9997; animation:rippleOut 0.7s ease-out forwards;
         }
-        @keyframes rippleOut {
-            0%{width:0;height:0;opacity:1;transform:translate(-50%,-50%);}
-            100%{width:150px;height:150px;opacity:0;transform:translate(-50%,-50%);}
-        }
-        .hero {
-            position: relative; width: 100%; height: 100vh; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 5; pointer-events: none;
-        }
+        @keyframes rippleOut { 0%{width:0;height:0;opacity:1;transform:translate(-50%,-50%);} 100%{width:150px;height:150px;opacity:0;transform:translate(-50%,-50%);} }
+        .hero { position: relative; width: 100%; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 5; pointer-events: none; }
         .hero h1 { font-size: 3.5em; font-weight: 700; color: #a0c4ff; letter-spacing: 3px; text-shadow: 0 0 30px rgba(160,196,255,0.6); margin-bottom: 8px; }
         .hero .line1 { color: #bbaacc; font-size: 1.15em; margin-bottom: 6px; font-style: italic; letter-spacing: 1.5px; text-shadow: 0 0 15px rgba(200,160,255,0.6); }
         .hero .line2 { color: #d4c5e8; font-size: 0.95em; margin-bottom: 4px; letter-spacing: 1px; opacity: 0.85; }
         .hero .line3 { color: #c8b8e0; font-size: 1em; font-weight: 500; letter-spacing: 1px; opacity: 0.9; }
-        .scroll-hint {
-            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); color: #aaccff;
-            font-size: 0.95em; animation: bounce 1.5s infinite; pointer-events: auto; cursor: pointer;
-        }
+        .scroll-hint { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); color: #aaccff; font-size: 0.95em; animation: bounce 1.5s infinite; pointer-events: auto; cursor: pointer; }
         @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(10px);} }
         .container { position: relative; z-index: 10; max-width: 1200px; margin: 0 auto; padding: 60px 12px 40px; }
         .cards-wrapper { margin-top: 30px; }
         .month-switch { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 0 0 22px; flex-wrap: wrap; }
         .month-switch button {
-            width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3);
-            background: rgba(0,0,0,0.5); font-size: 1.2em; cursor: pointer; color: #fff;
+            width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--card-border);
+            background: var(--card-bg); font-size: 1.2em; cursor: pointer; color: var(--text);
             backdrop-filter: blur(4px); transition: 0.2s; display: flex; align-items: center; justify-content: center;
         }
         .month-switch button:hover { background: rgba(255,255,255,0.2); border-color: #fff; }
         .month-label {
-            font-size: 1em; font-weight: 700; min-width: 100px; text-align: center; background: rgba(0,0,0,0.5);
-            padding: 8px 16px; border-radius: 20px; color: #fff; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.25);
+            font-size: 1em; font-weight: 700; min-width: 100px; text-align: center; background: var(--card-bg);
+            padding: 8px 16px; border-radius: 20px; color: var(--text); backdrop-filter: blur(4px); border: 1px solid var(--card-border);
         }
-        .btn-today {
-            padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.4);
-            background: rgba(0,0,0,0.5); color: #fff; font-weight: 600; cursor: pointer; font-size: 0.9em;
-        }
+        .btn-today { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text); font-weight: 600; cursor: pointer; font-size: 0.9em; }
         .total-particle-container { text-align:center; margin:10px auto 20px; height:80px; }
         .total-particle-container canvas { max-width:500px; height:80px; width: 100%; }
         .card {
@@ -68,73 +65,70 @@
             box-shadow:0 4px 20px rgba(0,0,0,0.3); border:1px solid var(--card-border);
             margin-bottom:18px; backdrop-filter: blur(4px); color: var(--text);
         }
-        .card-title { font-weight:700; font-size:1.05em; margin-bottom:14px; display:flex; align-items:center; gap:8px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:8px; }
+        .card-title { font-weight:700; font-size:1.05em; margin-bottom:14px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--card-border); padding-bottom:8px; color: var(--text); }
         .bal-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-        .bal-box { border-radius:14px; padding:14px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2); }
-        .bal-box input { width:100%; padding:10px 14px; border-radius:10px; border:2px solid rgba(255,255,255,0.3); font-size:0.95em; margin:5px 0; background:rgba(0,0,0,0.5); color:#fff; }
-        .spent-line { display:flex; justify-content:space-between; font-weight:700; margin-top:5px; color:#ddd; }
+        .bal-box { border-radius:14px; padding:14px; background:rgba(0,0,0,0.4); border:1px solid var(--card-border); }
+        .bal-box input { width:100%; padding:10px 14px; border-radius:10px; border:2px solid var(--input-border); font-size:0.95em; margin:5px 0; background: var(--input-bg); color: var(--input-text); }
+        .spent-line { display:flex; justify-content:space-between; font-weight:700; margin-top:5px; color: var(--text); }
         .two-columns { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
         @media (max-width:850px) { .two-columns { grid-template-columns:1fr; } }
         .btn { padding:9px 18px; border-radius:10px; border:none; cursor:pointer; font-weight:600; font-size:0.9em; background:#667eea; color:#fff; }
-        .btn-outline { background:rgba(0,0,0,0.5); border:2px solid #667eea; color:#667eea; }
+        .btn-outline { background:var(--card-bg); border:2px solid #667eea; color:#667eea; }
         .btn-sm { padding:5px 12px; font-size:0.78em; border-radius:8px; }
-        .btn-danger { background:rgba(0,0,0,0.5); border:1.5px solid #ff6b6b; color:#ff6b6b; }
+        .btn-danger { background:var(--card-bg); border:1.5px solid #ff6b6b; color:#ff6b6b; }
         .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-        .form-grid input, .form-grid select { padding:10px 12px; border-radius:10px; border:2px solid rgba(255,255,255,0.3); font-size:0.95em; background:rgba(0,0,0,0.5); color:#fff; }
+        .form-grid input, .form-grid select { padding:10px 12px; border-radius:10px; border:2px solid var(--input-border); font-size:0.95em; background: var(--input-bg); color: var(--input-text); }
         .chart-area { width:100%; border-radius:12px; background:rgba(0,0,0,0.3); }
         .notes-list { display:none; } .notes-list.show { display:block; }
-        .note-row { display:flex; align-items:center; gap:8px; margin:5px 0; font-size:0.85em; color:#ddd; }
-        .note-row input { flex:1; padding:6px 10px; border-radius:8px; border:1.5px solid rgba(255,255,255,0.3); background:rgba(0,0,0,0.5); color:#fff; }
+        .note-row { display:flex; align-items:center; gap:8px; margin:5px 0; font-size:0.85em; color: var(--text); }
+        .note-row input { flex:1; padding:6px 10px; border-radius:8px; border:1.5px solid var(--input-border); background: var(--input-bg); color: var(--input-text); }
         .adj-selector { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
-        .adj-selector select, .adj-selector input { padding:8px 12px; border-radius:8px; border:2px solid rgba(255,255,255,0.3); background:rgba(0,0,0,0.5); color:#fff; }
+        .adj-selector select, .adj-selector input { padding:8px 12px; border-radius:8px; border:2px solid var(--input-border); background: var(--input-bg); color: var(--input-text); }
         .records-table { width:100%; border-collapse:collapse; font-size:0.9em; }
-        .records-table th,.records-table td { padding:10px 8px; border-bottom:1px solid rgba(255,255,255,0.1); color:#ddd; }
-        .cat-tag { padding:3px 10px; border-radius:12px; font-size:0.8em; font-weight:600; background:rgba(255,255,255,0.15); color:#ddd; }
+        .records-table th,.records-table td { padding:10px 8px; border-bottom:1px solid var(--card-border); color: var(--text); }
+        .cat-tag { padding:3px 10px; border-radius:12px; font-size:0.8em; font-weight:600; background:rgba(255,255,255,0.15); color: var(--text); }
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000; }
         .modal.active { display:flex; }
         .modal-content { background:#1a1a2e; border-radius:20px; padding:24px; max-width:500px; width:90%; box-shadow:0 20px 40px rgba(0,0,0,0.5); max-height:80vh; overflow-y:auto; color:#fff; }
         .toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#2d3436; color:#fff; padding:12px 28px; border-radius:30px; font-weight:600; z-index:999; animation:fade 0.3s; }
         @keyframes fade { from{opacity:0;transform:translateX(-50%) translateY(-20px);} to{opacity:1;transform:translateX(-50%) translateY(0);} }
         .category-manager { margin-top:10px; }
-        .category-manager input { padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.3); background:rgba(0,0,0,0.5); color:#fff; width:140px; }
+        .category-manager input { padding:6px 10px; border-radius:8px; border:1px solid var(--input-border); background: var(--input-bg); color: var(--input-text); width:140px; }
         .bank-card-item { display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:8px; background:rgba(0,0,0,0.3); border-radius:10px; margin:6px 0; }
-        .bank-card-item input { width:100px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.3); background:rgba(0,0,0,0.5); color:#fff; }
+        .bank-card-item input { width:100px; padding:6px 10px; border-radius:8px; border:1px solid var(--input-border); background: var(--input-bg); color: var(--input-text); }
         .deposit-info { margin:10px 0; font-size:0.9em; }
         .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; text-align:center; }
         .calendar-grid .day { padding:6px 2px; border-radius:6px; font-size:0.85em; cursor:pointer; }
         .calendar-grid .day:hover { background:rgba(255,255,255,0.1); }
         .calendar-grid .day .amount { font-size:0.7em; color:#aaccff; font-weight:600; }
         .week-summary { margin:10px 0; font-size:0.85em; background:rgba(0,0,0,0.3); padding:10px; border-radius:10px; }
-        /* 手机端适配 */
+        .settings-btn { position: fixed; top: 20px; right: 20px; z-index: 10000; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.3); color: #fff; font-size: 1.2em; cursor: pointer; backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .settings-btn:hover { background: rgba(255,255,255,0.2); }
+        .mode-selector { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .mode-selector button { padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.4); background: transparent; color: #fff; cursor: pointer; font-size: 0.85em; transition: 0.2s; }
+        .mode-selector button.active { background: #667eea; border-color: #667eea; }
+        .color-options { display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
+        .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .color-dot.active { border-color: #fff; transform: scale(1.2); }
         @media (max-width: 600px) {
             .hero h1 { font-size: 2.2em; }
-            .hero .line1 { font-size: 0.9em; }
-            .hero .line2, .hero .line3 { font-size: 0.8em; }
             .month-switch button { width: 38px; height: 38px; font-size: 1em; }
             .month-label { font-size: 0.85em; padding: 6px 10px; }
-            .btn-today { font-size: 0.75em; padding: 6px 10px; }
             .bal-grid { grid-template-columns: 1fr; }
             .card { padding: 14px 14px; }
-            .card-title { font-size: 0.95em; }
-            .form-grid { grid-template-columns: 1fr; }
             .two-columns { gap: 8px; }
             .btn { padding: 8px 12px; font-size: 0.8em; }
-            .btn-sm { padding: 4px 8px; font-size: 0.7em; }
-            .container { padding: 40px 8px 30px; }
-            .records-table { font-size: 0.75em; }
-            .records-table th, .records-table td { padding: 6px 3px; }
-            .total-particle-container { height: 60px; }
-            .total-particle-container canvas { height: 60px; }
         }
     </style>
 </head>
-<body>
+<body class="night cursor-active">
     <canvas id="bgCanvas"></canvas>
     <canvas id="trailCanvas"></canvas>
     <div class="custom-cursor" id="customCursor"></div>
+    <button class="settings-btn" onclick="openSettingsModal()">⚙️</button>
 
     <div class="hero">
-        <h1>⭐ 星星账本</h1>
+        <h1>⭐星星账本</h1>
         <div class="line1" id="randomLine"></div>
         <div class="line2">星星不是枷锁，就像记账是为了更合理的分配</div>
         <div class="line3">但是请记得：好好爱自己</div>
@@ -148,8 +142,8 @@
                 <span class="month-label" id="monthLabel">2026年5月</span>
                 <button onclick="changeMonth(1)">▶</button>
                 <button class="btn-today" onclick="goCurrentMonth()">今</button>
-                <button class="btn-outline btn-sm" onclick="openCalendar()" style="color:#fff;">览</button>
-                <button class="btn-outline btn-sm" onclick="openDepositModal()" style="color:#fff;">存</button>
+                <button class="btn-outline btn-sm" onclick="openCalendar()">览</button>
+                <button class="btn-outline btn-sm" onclick="openDepositModal()">存</button>
             </div>
             <div class="total-particle-container">
                 <canvas id="totalParticleCanvas" width="500" height="80"></canvas>
@@ -161,8 +155,8 @@
                     <div class="bal-box"><div>💙 支付宝</div><input type="number" id="aliInit" placeholder="月初余额" onchange="saveBalances()"><input type="number" id="aliRemain" placeholder="当前剩余" onchange="saveBalances()"><div class="spent-line"><span>支出</span><span id="aliSpent">¥0.00</span></div></div>
                 </div>
                 <div id="bankCardsContainer"></div>
-                <button class="btn-sm btn-outline" style="margin-top:8px;color:#fff;" onclick="addBankCard()">➕ 添加银行卡</button>
-                <button class="btn-sm btn-outline" style="margin-top:12px;color:#fff;" onclick="carryOver()">📥 从上月结转</button>
+                <button class="btn-sm btn-outline" style="margin-top:8px;" onclick="addBankCard()">➕ 添加银行卡</button>
+                <button class="btn-sm btn-outline" style="margin-top:12px;" onclick="carryOver()">📥 从上月结转</button>
             </div>
             <div class="two-columns">
                 <div>
@@ -209,42 +203,43 @@
                 </div>
             </div>
             <div style="text-align:center;margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-                <button class="btn btn-outline btn-sm" onclick="exportData()" style="color:#fff;">📤 导出</button>
-                <button class="btn btn-outline btn-sm" onclick="document.getElementById('importFile').click()" style="color:#fff;">📥 导入</button>
-                <button class="btn btn-outline btn-sm" onclick="copyData()" style="color:#fff;">📋 复制</button>
+                <button class="btn btn-outline btn-sm" onclick="exportData()">📤 导出</button>
+                <button class="btn btn-outline btn-sm" onclick="document.getElementById('importFile').click()">📥 导入</button>
+                <button class="btn btn-outline btn-sm" onclick="copyData()">📋 复制</button>
                 <button class="btn btn-outline btn-sm btn-danger" onclick="clearMonth()">🗑️ 清除</button>
                 <input type="file" id="importFile" hidden accept=".json" onchange="importData(event)">
             </div>
         </div>
     </div>
 
-    <!-- 模态框 -->
     <div class="modal" id="calendarModal"><div class="modal-content"><h3>📆 本月原始开销日历</h3><div id="calendarContainer"></div><button class="btn" style="margin-top:16px;width:100%;" onclick="closeCalendar()">关闭</button></div></div>
     <div class="modal" id="categoryModal"><div class="modal-content"><h3>⚙️ 管理分类</h3><div id="categoryList"></div><button class="btn btn-sm btn-outline" style="margin-top:12px;" onclick="closeCategoryModal()">关闭</button></div></div>
-    <div class="modal" id="depositModal"><div class="modal-content"><h3>💰 存款记录</h3><div class="deposit-info"><label>本月收入</label><input type="number" id="monthlyIncome" placeholder="输入收入金额" step="0.01" style="width:100%;padding:10px;border-radius:8px;border:2px solid rgba(255,255,255,0.3);background:rgba(0,0,0,0.5);color:#fff;"></div><div class="deposit-info" id="depositResult"></div><button class="btn" onclick="saveIncome()">💾 保存收入</button><button class="btn btn-sm btn-outline" style="margin-top:10px;" onclick="closeDepositModal()">关闭</button></div></div>
+    <div class="modal" id="depositModal"><div class="modal-content"><h3>💰 存款记录</h3><div class="deposit-info"><label>本月收入</label><input type="number" id="monthlyIncome" placeholder="输入收入金额" step="0.01" style="width:100%;padding:10px;border-radius:8px;border:2px solid var(--input-border);background:var(--input-bg);color:var(--input-text);"></div><div class="deposit-info" id="depositResult"></div><button class="btn" onclick="saveIncome()">💾 保存收入</button><button class="btn btn-sm btn-outline" style="margin-top:10px;" onclick="closeDepositModal()">关闭</button></div></div>
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <h3>⚙️ 界面风格设置</h3>
+            <div class="mode-selector">
+                <button data-mode="night" class="active">🌙 黑夜</button>
+                <button data-mode="day">☀️ 白天</button>
+                <button data-mode="simple-white">⬜ 简洁白</button>
+                <button data-mode="simple-black">⬛ 简洁黑</button>
+            </div>
+            <div id="colorPickerContainer" style="margin:10px 0;">
+                <label>🎨 粒子颜色：</label>
+                <div class="color-options" id="particleColorOptions"></div>
+            </div>
+            <button class="btn btn-sm btn-outline" style="margin-top:10px;" onclick="closeSettingsModal()">关闭</button>
+        </div>
+    </div>
 
     <script>
-        // ========== 1. 设备检测与适配 (修复版) ==========
         (function initDeviceAdaptation() {
-            // 更可靠的移动端检测：包含触摸支持 + 屏幕尺寸
             const isMobile = (('ontouchstart' in window) || (navigator.maxTouchPoints > 0)) && window.innerWidth < 1024;
-            if (isMobile) {
-                document.body.classList.remove('cursor-active');
-                window.NUM_STARS = 200;
-                window.NUM_HEART = 4500;
-                window.IS_MOBILE = true;
-            } else {
-                document.body.classList.add('cursor-active');
-                window.NUM_STARS = 600;
-                window.NUM_HEART = 12000;
-                window.IS_MOBILE = false;
-            }
-            // 初始化鼠标位置
-            window.mouseX = window.innerWidth/2;
-            window.mouseY = window.innerHeight/2;
+            if (isMobile) { document.body.classList.remove('cursor-active'); window.NUM_STARS = 200; window.NUM_HEART = 6000; window.IS_MOBILE = true; }
+            else { document.body.classList.add('cursor-active'); window.NUM_STARS = 600; window.NUM_HEART = 12000; window.IS_MOBILE = false; }
+            window.mouseX = window.innerWidth/2; window.mouseY = window.innerHeight/2;
         })();
 
-        // ========== 2. 数据管理 (同前，完整保留) ==========
         const STORAGE_KEY = 'star_ledger_heart_final';
         let currentMonth = new Date().toISOString().slice(0,7);
         let allData = {};
@@ -257,168 +252,81 @@
         function formatMoney(n) { return '¥'+(n||0).toFixed(2); }
         function saveCategories() { localStorage.setItem('customCategories',JSON.stringify(customCategories)); }
 
-        function calcTotalSpent(data) {
-            let spent=(data.wxInit-data.wxRemain)+(data.aliInit-data.aliRemain);
-            if(data.bankCards) data.bankCards.forEach(c=>spent+=(c.initial||0)-(c.remaining||0));
-            return spent;
-        }
-
-        function saveBalances() {
-            const d=getMonthData(currentMonth);
-            d.wxInit=+document.getElementById('wxInit').value||0; d.wxRemain=+document.getElementById('wxRemain').value||0;
-            d.aliInit=+document.getElementById('aliInit').value||0; d.aliRemain=+document.getElementById('aliRemain').value||0;
-            const cards=document.querySelectorAll('.bank-card-item'); d.bankCards=[];
-            cards.forEach(el=>{ const id=el.dataset.id; d.bankCards.push({id,name:el.querySelector('.card-name').value,initial:+el.querySelector('.card-initial').value||0,remaining:+el.querySelector('.card-remaining').value||0}); });
-            saveData(); renderAll(); triggerBurstAtElement(document.getElementById('totalParticleCanvas'));
-        }
+        function calcTotalSpent(data) { let spent=(data.wxInit-data.wxRemain)+(data.aliInit-data.aliRemain); if(data.bankCards) data.bankCards.forEach(c=>spent+=(c.initial||0)-(c.remaining||0)); return spent; }
+        function saveBalances() { const d=getMonthData(currentMonth); d.wxInit=+document.getElementById('wxInit').value||0; d.wxRemain=+document.getElementById('wxRemain').value||0; d.aliInit=+document.getElementById('aliInit').value||0; d.aliRemain=+document.getElementById('aliRemain').value||0; const cards=document.querySelectorAll('.bank-card-item'); d.bankCards=[]; cards.forEach(el=>{ const id=el.dataset.id; d.bankCards.push({id,name:el.querySelector('.card-name').value,initial:+el.querySelector('.card-initial').value||0,remaining:+el.querySelector('.card-remaining').value||0}); }); saveData(); renderAll(); triggerBurstAtElement(document.getElementById('totalParticleCanvas')); }
         function addBankCard() { getMonthData(currentMonth).bankCards.push({id:Date.now().toString(),name:'',initial:0,remaining:0}); saveData(); renderBankCards(); }
         function removeBankCard(id) { const d=getMonthData(currentMonth); d.bankCards=d.bankCards.filter(c=>c.id!==id); saveData(); renderBankCards(); }
-        function renderBankCards() {
-            const d=getMonthData(currentMonth);
-            document.getElementById('bankCardsContainer').innerHTML=d.bankCards.map(c=>`
-                <div class="bank-card-item" data-id="${c.id}">
-                    <input class="card-name" placeholder="卡名" value="${c.name}" onchange="saveBalances()">
-                    <input class="card-initial" type="number" placeholder="月初" step="0.01" value="${c.initial||''}" onchange="saveBalances()">
-                    <input class="card-remaining" type="number" placeholder="剩余" step="0.01" value="${c.remaining||''}" onchange="saveBalances()">
-                    <span class="spent-line">支出 ${formatMoney((c.initial||0)-(c.remaining||0))}</span>
-                    <button class="btn-sm btn-danger" onclick="removeBankCard('${c.id}')">🗑️</button>
-                </div>`).join('');
-        }
-        function carryOver() {
-            const [y,m]=currentMonth.split('-').map(Number); let py=y,pm=m-1; if(pm===0){pm=12;py--;}
-            const prev=getMonthData(`${py}-${String(pm).padStart(2,'0')}`),cur=getMonthData(currentMonth);
-            cur.wxInit=prev.wxRemain||0; cur.aliInit=prev.aliRemain||0;
-            if(prev.bankCards) cur.bankCards=prev.bankCards.map(c=>({...c,initial:c.remaining||0,remaining:c.remaining||0}));
-            saveData(); renderAll(); triggerBurstAtElement(document.getElementById('wxSpent'));
-        }
-        function addRecord() {
-            const amt=+document.getElementById('recAmount').value;
-            if(!amt||amt<=0) return showToast('请输入金额');
-            const rec={id:Date.now(),amount:Math.round(amt*100)/100,category:document.getElementById('recCat').value,payment:document.getElementById('recPay').value,date:document.getElementById('recDate').value,note:document.getElementById('recNote').value.trim()};
-            const month=rec.date.substring(0,7); getMonthData(month).records.push(rec); getMonthData(month).records.sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
-            saveData(); if(month!==currentMonth) currentMonth=month;
-            renderAll(); document.getElementById('recAmount').value=''; document.getElementById('recNote').value='';
-            triggerBurstAtElement(document.getElementById('totalParticleCanvas'));
-        }
+        function renderBankCards() { const d=getMonthData(currentMonth); document.getElementById('bankCardsContainer').innerHTML=d.bankCards.map(c=>`<div class="bank-card-item" data-id="${c.id}"><input class="card-name" placeholder="卡名" value="${c.name}" onchange="saveBalances()"><input class="card-initial" type="number" placeholder="月初" step="0.01" value="${c.initial||''}" onchange="saveBalances()"><input class="card-remaining" type="number" placeholder="剩余" step="0.01" value="${c.remaining||''}" onchange="saveBalances()"><span class="spent-line">支出 ${formatMoney((c.initial||0)-(c.remaining||0))}</span><button class="btn-sm btn-danger" onclick="removeBankCard('${c.id}')">🗑️</button></div>`).join(''); }
+        function carryOver() { const [y,m]=currentMonth.split('-').map(Number); let py=y,pm=m-1; if(pm===0){pm=12;py--;} const prev=getMonthData(`${py}-${String(pm).padStart(2,'0')}`),cur=getMonthData(currentMonth); cur.wxInit=prev.wxRemain||0; cur.aliInit=prev.aliRemain||0; if(prev.bankCards) cur.bankCards=prev.bankCards.map(c=>({...c,initial:c.remaining||0,remaining:c.remaining||0})); saveData(); renderAll(); triggerBurstAtElement(document.getElementById('wxSpent')); }
+        function addRecord() { const amt=+document.getElementById('recAmount').value; if(!amt||amt<=0) return showToast('请输入金额'); const rec={id:Date.now(),amount:Math.round(amt*100)/100,category:document.getElementById('recCat').value,payment:document.getElementById('recPay').value,date:document.getElementById('recDate').value,note:document.getElementById('recNote').value.trim()}; const month=rec.date.substring(0,7); getMonthData(month).records.push(rec); getMonthData(month).records.sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id); saveData(); if(month!==currentMonth) currentMonth=month; renderAll(); document.getElementById('recAmount').value=''; document.getElementById('recNote').value=''; triggerBurstAtElement(document.getElementById('totalParticleCanvas')); }
         function deleteRecord(id,month) { if(!confirm('删除？')) return; getMonthData(month).records=getMonthData(month).records.filter(r=>r.id!==id); saveData(); renderAll(); }
-        function addAdjustment() {
-            const type=document.getElementById('adjTargetType').value,targetId=document.getElementById('adjTarget').value,amount=+document.getElementById('adjAmount').value,note=document.getElementById('adjNote').value.trim();
-            if(!amount||amount<=0) return showToast('请输入金额');
-            getMonthData(currentMonth).adjustments.push({id:Date.now(),targetType:type,targetId,amount,note}); saveData(); renderAll();
-        }
+        function addAdjustment() { const type=document.getElementById('adjTargetType').value,targetId=document.getElementById('adjTarget').value,amount=+document.getElementById('adjAmount').value,note=document.getElementById('adjNote').value.trim(); if(!amount||amount<=0) return showToast('请输入金额'); getMonthData(currentMonth).adjustments.push({id:Date.now(),targetType:type,targetId,amount,note}); saveData(); renderAll(); }
         function deleteAdjustment(id) { getMonthData(currentMonth).adjustments=getMonthData(currentMonth).adjustments.filter(a=>a.id!==id); saveData(); renderAll(); }
         function saveDailyNote(date,note) { const d=getMonthData(currentMonth); if(!d.dailyNotes) d.dailyNotes={}; if(note.trim()==='') delete d.dailyNotes[date]; else d.dailyNotes[date]=note.trim(); saveData(); renderDailyNotes('origNotes'); renderDailyNotes('adjNotes'); }
         function getAdjustedRecords() { const data=getMonthData(currentMonth); let records=JSON.parse(JSON.stringify(data.records)); data.adjustments.forEach(adj=>{if(adj.targetType==='record'){const rec=records.find(r=>r.id==adj.targetId); if(rec) rec.amount=Math.max(0,rec.amount-adj.amount);}}); return records; }
         function getCategoryTotals(records,applyCatAdj=false) { const totals={}; customCategories.forEach(c=>totals[c]=0); records.forEach(r=>{if(totals[r.category]!==undefined) totals[r.category]+=r.amount;}); if(applyCatAdj){getMonthData(currentMonth).adjustments.forEach(adj=>{if(adj.targetType==='category'&&totals[adj.targetId]!==undefined) totals[adj.targetId]=Math.max(0,totals[adj.targetId]-adj.amount);});} return totals; }
 
-        function renderAll() {
-            loadData();
-            document.getElementById('monthLabel').textContent=currentMonth.replace('-','年')+'月';
-            const d=getMonthData(currentMonth);
-            document.getElementById('wxInit').value=d.wxInit||''; document.getElementById('wxRemain').value=d.wxRemain||'';
-            document.getElementById('aliInit').value=d.aliInit||''; document.getElementById('aliRemain').value=d.aliRemain||'';
-            document.getElementById('wxSpent').textContent=formatMoney(d.wxInit-d.wxRemain);
-            document.getElementById('aliSpent').textContent=formatMoney(d.aliInit-d.aliRemain);
-            renderBankCards(); updateCatSelects(); updateAdjTargetList();
-            renderDailyChart('dailyChartOrig',d.records); renderDailyChart('dailyChartAdj',getAdjustedRecords());
-            renderDailyNotes('origNotes'); renderDailyNotes('adjNotes');
-            renderPieChart('pieChartOrig','pieLegendOrig',d.records,false);
-            renderPieChart('pieChartAdj','pieLegendAdj',getAdjustedRecords(),true);
-            renderOrigAnalysis(); renderAdjAnalysis(); renderAdjList(); renderRecords();
-            document.getElementById('recDate').value=new Date().toISOString().slice(0,10);
-            drawTotalParticles(calcTotalSpent(d)); updateDepositDisplay();
-        }
-        function updateDepositDisplay() {
-            const d=getMonthData(currentMonth); const ts=calcTotalSpent(d); const inc=d.income||0; const ms=inc-ts;
-            let cs=0; for(const[,md] of Object.entries(allData)) cs+=(md.income||0)-calcTotalSpent(md);
-            document.getElementById('depositResult').innerHTML=`<div>📅 本月支出：${formatMoney(ts)}</div><div>💵 本月收入：${formatMoney(inc)}</div><div>🏦 本月结余：${formatMoney(ms)}</div><div>📈 累计存款：${formatMoney(cs)}</div>`;
-        }
-        function updateCatSelects() {
-            document.getElementById('recCat').innerHTML=customCategories.map(c=>`<option value="${c}">${c}</option>`).join('');
-            document.getElementById('filterCat').innerHTML='<option value="">全部分类</option>'+customCategories.map(c=>`<option value="${c}">${c}</option>`).join('');
-        }
-        function updateAdjTargetList() {
-            const type=document.getElementById('adjTargetType').value,select=document.getElementById('adjTarget'); select.innerHTML='';
-            const data=getMonthData(currentMonth);
-            if(type==='category') customCategories.forEach(c=>select.add(new Option(c,c)));
-            else data.records.forEach(r=>select.add(new Option(`${r.date} ${r.category} ¥${r.amount}`,r.id)));
-        }
-        function renderAdjList() {
-            const data=getMonthData(currentMonth),list=document.getElementById('adjList');
-            if(!data.adjustments.length){list.innerHTML='<div style="color:#aaa;">暂无调整</div>';return;}
-            list.innerHTML=data.adjustments.map(a=>{
-                let desc=a.targetType==='category'?`分类:${a.targetId}`:`明细:${(data.records.find(r=>r.id==a.targetId)||{}).date||''}`;
-                return `<div style="display:flex;justify-content:space-between;background:rgba(0,0,0,0.4);padding:6px 10px;border-radius:8px;margin:4px 0;"><span>➖ ${formatMoney(a.amount)} ${desc} ${a.note?`(${a.note})`:''}</span><button class="btn-sm btn-danger" onclick="deleteAdjustment(${a.id})">🗑️</button></div>`;
-            }).join('');
-        }
+        function renderAll() { loadData(); document.getElementById('monthLabel').textContent=currentMonth.replace('-','年')+'月'; const d=getMonthData(currentMonth); document.getElementById('wxInit').value=d.wxInit||''; document.getElementById('wxRemain').value=d.wxRemain||''; document.getElementById('aliInit').value=d.aliInit||''; document.getElementById('aliRemain').value=d.aliRemain||''; document.getElementById('wxSpent').textContent=formatMoney(d.wxInit-d.wxRemain); document.getElementById('aliSpent').textContent=formatMoney(d.aliInit-d.aliRemain); renderBankCards(); updateCatSelects(); updateAdjTargetList(); renderDailyChart('dailyChartOrig',d.records); renderDailyChart('dailyChartAdj',getAdjustedRecords()); renderDailyNotes('origNotes'); renderDailyNotes('adjNotes'); renderPieChart('pieChartOrig','pieLegendOrig',d.records,false); renderPieChart('pieChartAdj','pieLegendAdj',getAdjustedRecords(),true); renderOrigAnalysis(); renderAdjAnalysis(); renderAdjList(); renderRecords(); document.getElementById('recDate').value=new Date().toISOString().slice(0,10); drawTotalParticles(calcTotalSpent(d)); updateDepositDisplay(); }
+        function updateDepositDisplay() { const d=getMonthData(currentMonth); const ts=calcTotalSpent(d); const inc=d.income||0; const ms=inc-ts; let cs=0; for(const[,md] of Object.entries(allData)) cs+=(md.income||0)-calcTotalSpent(md); document.getElementById('depositResult').innerHTML=`<div>📅 本月支出：${formatMoney(ts)}</div><div>💵 本月收入：${formatMoney(inc)}</div><div>🏦 本月结余：${formatMoney(ms)}</div><div>📈 累计存款：${formatMoney(cs)}</div>`; }
+        function updateCatSelects() { document.getElementById('recCat').innerHTML=customCategories.map(c=>`<option value="${c}">${c}</option>`).join(''); document.getElementById('filterCat').innerHTML='<option value="">全部分类</option>'+customCategories.map(c=>`<option value="${c}">${c}</option>`).join(''); }
+        function updateAdjTargetList() { const type=document.getElementById('adjTargetType').value,select=document.getElementById('adjTarget'); select.innerHTML=''; const data=getMonthData(currentMonth); if(type==='category') customCategories.forEach(c=>select.add(new Option(c,c))); else data.records.forEach(r=>select.add(new Option(`${r.date} ${r.category} ¥${r.amount}`,r.id))); }
+        function renderAdjList() { const data=getMonthData(currentMonth),list=document.getElementById('adjList'); if(!data.adjustments.length){list.innerHTML='<div style="color:#aaa;">暂无调整</div>';return;} list.innerHTML=data.adjustments.map(a=>{ let desc=a.targetType==='category'?`分类:${a.targetId}`:`明细:${(data.records.find(r=>r.id==a.targetId)||{}).date||''}`; return `<div style="display:flex;justify-content:space-between;background:rgba(0,0,0,0.4);padding:6px 10px;border-radius:8px;margin:4px 0;"><span>➖ ${formatMoney(a.amount)} ${desc} ${a.note?`(${a.note})`:''}</span><button class="btn-sm btn-danger" onclick="deleteAdjustment(${a.id})">🗑️</button></div>`; }).join(''); }
+
         function renderDailyChart(canvasId,records) {
-            const canvas=document.getElementById(canvasId); const w=canvas.clientWidth||400,h=200;
-            canvas.width=w; canvas.height=h; canvas.style.width=w+'px'; canvas.style.height=h+'px';
-            const ctx=canvas.getContext('2d');
-            const days=new Date(parseInt(currentMonth.split('-')[0]),parseInt(currentMonth.split('-')[1]),0).getDate();
-            const daily=new Array(days).fill(0);
-            records.forEach(r=>{const d=parseInt(r.date.split('-')[2]); if(d) daily[d-1]+=r.amount;});
-            const max=Math.max(...daily,1); const notes=getMonthData(currentMonth).dailyNotes||{};
-            ctx.clearRect(0,0,w,h); const step=(w-30)/days,bw=Math.max(5,step-3);
-            for(let i=0;i<days;i++){
-                const x=18+i*step,barH=(daily[i]/max)*145,y=h-22-barH;
-                ctx.fillStyle=daily[i]>0?'#8b9cf7':'#334'; ctx.beginPath(); ctx.roundRect(x,y,bw,barH,[3,3,0,0]); ctx.fill();
-                if(daily[i]>0){
-                    ctx.fillStyle='#fff'; ctx.font='bold 9px sans-serif'; ctx.textAlign='center';
-                    ctx.fillText(formatMoney(daily[i]).replace('¥',''),x+bw/2,y-3);
-                    const ds=`${currentMonth}-${String(i+1).padStart(2,'0')}`;
-                    const nt=notes[ds]?(notes[ds].length>6?notes[ds].substring(0,6)+'…':notes[ds]):'';
-                    if(nt){ctx.save();ctx.translate(x+bw/2,y-18);ctx.fillStyle='#faa';ctx.font='7px sans-serif';for(let j=0;j<nt.length;j++)ctx.fillText(nt[j],0,j*9);ctx.restore();}
+            const canvas=document.getElementById(canvasId);
+            const dpr = window.devicePixelRatio || 2;
+            const w = canvas.clientWidth || 400, h = 200;
+            canvas.width = w * dpr; canvas.height = h * dpr;
+            canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            const days = new Date(parseInt(currentMonth.split('-')[0]), parseInt(currentMonth.split('-')[1]), 0).getDate();
+            const daily = new Array(days).fill(0);
+            records.forEach(r => { const d = parseInt(r.date.split('-')[2]); if (d) daily[d - 1] += r.amount; });
+            const max = Math.max(...daily, 1);
+            const notes = getMonthData(currentMonth).dailyNotes || {};
+            ctx.clearRect(0, 0, w, h);
+            const step = (w - 40) / days, bw = Math.max(8, step - 4);
+            ctx.textRendering = 'optimizeLegibility';
+            for (let i = 0; i < days; i++) {
+                const x = 20 + i * step, barH = (daily[i] / max) * 140, y = h - 28 - barH;
+                const grad = ctx.createLinearGradient(x, y, x, y + barH);
+                grad.addColorStop(0, daily[i] > 0 ? '#9baeff' : '#3a3a5c');
+                grad.addColorStop(1, daily[i] > 0 ? '#667eea' : '#2a2a3a');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.roundRect(x, y, bw, barH, [5, 5, 0, 0]);
+                ctx.fill();
+                if (daily[i] > 0.01) {
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 11px -apple-system, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(formatMoney(daily[i]).replace('¥', ''), x + bw / 2, y - 5);
+                    const ds = `${currentMonth}-${String(i + 1).padStart(2, '0')}`;
+                    const nt = notes[ds] ? (notes[ds].length > 8 ? notes[ds].substring(0, 8) + '…' : notes[ds]) : '';
+                    if (nt) {
+                        ctx.save();
+                        ctx.translate(x + bw / 2, y - 22);
+                        ctx.fillStyle = '#ffaaaa';
+                        ctx.font = '9px -apple-system, sans-serif';
+                        ctx.textAlign = 'center';
+                        for (let j = 0; j < nt.length; j++) ctx.fillText(nt[j], 0, j * 11);
+                        ctx.restore();
+                    }
                 }
-                if(i===0||i===days-1||i%Math.max(1,Math.floor(days/6))===0){ctx.fillStyle='#aaa';ctx.font='8px sans-serif';ctx.fillText(i+1,x+bw/2,h-6);}
+                if (days <= 31 && (i === 0 || i === days - 1 || i % Math.max(1, Math.floor(days / 7)) === 0)) {
+                    ctx.fillStyle = '#bbb';
+                    ctx.font = '9px -apple-system, sans-serif';
+                    ctx.fillText(i + 1, x + bw / 2, h - 8);
+                }
             }
         }
-        function renderDailyNotes(containerId) {
-            const data=getMonthData(currentMonth); const days=new Date(parseInt(currentMonth.split('-')[0]),parseInt(currentMonth.split('-')[1]),0).getDate();
-            const daily=new Array(days).fill(0); const recs=containerId==='origNotes'?data.records:getAdjustedRecords();
-            recs.forEach(r=>{const d=parseInt(r.date.split('-')[2]); if(d) daily[d-1]+=r.amount;});
-            const notes=data.dailyNotes||{}; let html='';
-            for(let i=1;i<=days;i++){const ds=`${currentMonth}-${String(i).padStart(2,'0')}`; if(daily[i-1]>0||notes[ds]) html+=`<div class="note-row"><span>📅 ${i}日 ${formatMoney(daily[i-1])}</span><input value="${notes[ds]||''}" placeholder="备注" onchange="saveDailyNote('${ds}',this.value)"></div>`;}
-            document.getElementById(containerId).innerHTML=html||'<div style="color:#aaa;">无</div>';
-        }
-        function renderPieChart(canvasId,legendId,records,applyCat) {
-            const canvas=document.getElementById(canvasId); canvas.width=180; canvas.height=180; canvas.style.width='180px'; canvas.style.height='180px';
-            const ctx=canvas.getContext('2d'); const totals=getCategoryTotals(records,applyCat);
-            const colors=['#ff6b6b','#4ecdc4','#ff9f43','#95a5a6','#f9ca24','#a29bfe','#fd79a8','#00b894'];
-            const total=Object.values(totals).reduce((s,v)=>s+v,0); ctx.clearRect(0,0,180,180);
-            if(total===0){document.getElementById(legendId).innerHTML='<span style="color:#aaa;">无支出</span>';return;}
-            let start=-Math.PI/2; const cats=Object.keys(totals);
-            cats.forEach((c,i)=>{const angle=(totals[c]/total)*Math.PI*2; ctx.beginPath(); ctx.moveTo(90,90); ctx.arc(90,90,75,start,start+angle); ctx.closePath(); ctx.fillStyle=colors[i%colors.length]; ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke(); start+=angle;});
-            ctx.beginPath(); ctx.arc(90,90,35,0,Math.PI*2); ctx.fillStyle='#1a1a2e'; ctx.fill();
-            ctx.fillStyle='#fff'; ctx.font='bold 12px sans-serif'; ctx.textAlign='center'; ctx.fillText('合计',90,86); ctx.fillText(formatMoney(total),90,104);
-            document.getElementById(legendId).innerHTML=cats.map((c,i)=>`<div><span style="background:${colors[i%colors.length]};width:10px;height:10px;display:inline-block;border-radius:2px;"></span> ${c} ${formatMoney(totals[c])}</div>`).join('');
-        }
+        function renderDailyNotes(containerId) { const data=getMonthData(currentMonth); const days=new Date(parseInt(currentMonth.split('-')[0]),parseInt(currentMonth.split('-')[1]),0).getDate(); const daily=new Array(days).fill(0); const recs=containerId==='origNotes'?data.records:getAdjustedRecords(); recs.forEach(r=>{const d=parseInt(r.date.split('-')[2]); if(d) daily[d-1]+=r.amount;}); const notes=data.dailyNotes||{}; let html=''; for(let i=1;i<=days;i++){const ds=`${currentMonth}-${String(i).padStart(2,'0')}`; if(daily[i-1]>0||notes[ds]) html+=`<div class="note-row"><span>📅 ${i}日 ${formatMoney(daily[i-1])}</span><input value="${notes[ds]||''}" placeholder="备注" onchange="saveDailyNote('${ds}',this.value)"></div>`;} document.getElementById(containerId).innerHTML=html||'<div style="color:#aaa;">无</div>'; }
+        function renderPieChart(canvasId,legendId,records,applyCat) { const canvas=document.getElementById(canvasId); const dpr=window.devicePixelRatio||2; const sz=180; canvas.width=sz*dpr; canvas.height=sz*dpr; canvas.style.width=sz+'px'; canvas.style.height=sz+'px'; const ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr); const totals=getCategoryTotals(records,applyCat); const colors=['#ff6b6b','#4ecdc4','#ff9f43','#95a5a6','#f9ca24','#a29bfe','#fd79a8','#00b894']; const total=Object.values(totals).reduce((s,v)=>s+v,0); ctx.clearRect(0,0,sz,sz); if(total===0){document.getElementById(legendId).innerHTML='<span style="color:#aaa;">无支出</span>';return;} let start=-Math.PI/2; const cats=Object.keys(totals); cats.forEach((c,i)=>{const angle=(totals[c]/total)*Math.PI*2; ctx.beginPath(); ctx.moveTo(90,90); ctx.arc(90,90,75,start,start+angle); ctx.closePath(); ctx.fillStyle=colors[i%colors.length]; ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke(); start+=angle;}); ctx.beginPath(); ctx.arc(90,90,35,0,Math.PI*2); ctx.fillStyle='#1a1a2e'; ctx.fill(); ctx.fillStyle='#fff'; ctx.font='bold 13px sans-serif'; ctx.textAlign='center'; ctx.fillText('合计',90,86); ctx.fillText(formatMoney(total),90,104); document.getElementById(legendId).innerHTML=cats.map((c,i)=>`<div><span style="background:${colors[i%colors.length]};width:10px;height:10px;display:inline-block;border-radius:2px;"></span> ${c} ${formatMoney(totals[c])}</div>`).join(''); }
         function renderOrigAnalysis(){const d=getMonthData(currentMonth);const t=Object.values(getCategoryTotals(d.records,false)).reduce((s,v)=>s+v,0);document.getElementById('origAnalysis').innerHTML=`💰 原始总支出：${formatMoney(t)}<br>📊 与手动差额：${formatMoney(calcTotalSpent(d)-t)}`;}
         function renderAdjAnalysis(){const d=getMonthData(currentMonth);const t=Object.values(getCategoryTotals(getAdjustedRecords(),true)).reduce((s,v)=>s+v,0);document.getElementById('adjAnalysis').innerHTML=`💰 调整后总支出：${formatMoney(t)}<br>📊 与手动差额：${formatMoney(calcTotalSpent(d)-t)}`;}
-        function renderRecords() {
-            const data=getMonthData(currentMonth); let records=[...data.records];
-            const cat=document.getElementById('filterCat').value,date=document.getElementById('filterDate').value,sort=document.getElementById('sortBy').value;
-            if(cat) records=records.filter(r=>r.category===cat); if(date) records=records.filter(r=>r.date===date);
-            if(sort==='date-desc') records.sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
-            else if(sort==='date-asc') records.sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
-            else if(sort==='amount-desc') records.sort((a,b)=>b.amount-a.amount);
-            else if(sort==='amount-asc') records.sort((a,b)=>a.amount-b.amount);
-            document.getElementById('recordCount').textContent=`（共${records.length}笔）`;
-            document.getElementById('recordsBody').innerHTML=records.map(r=>`<tr><td>${r.date}</td><td><span class="cat-tag">${r.category}</span></td><td>${r.payment}</td><td>${formatMoney(r.amount)}</td><td>${r.note||'-'}</td><td><button class="btn-sm btn-danger" onclick="deleteRecord(${r.id},'${r.date.substring(0,7)}')">🗑️</button></td></tr>`).join('');
-        }
-        function openCalendar() {
-            const data=getMonthData(currentMonth); const [y,m]=currentMonth.split('-').map(Number);
-            const days=new Date(y,m,0).getDate(),first=new Date(y,m-1,1).getDay();
-            const daily=new Array(days).fill(0); data.records.forEach(r=>{const d=parseInt(r.date.split('-')[2]); if(d) daily[d-1]+=r.amount;});
-            let html='<div class="calendar-grid">';
-            ['日','一','二','三','四','五','六'].forEach(d=>html+=`<div style="font-weight:600;">${d}</div>`);
-            for(let i=0;i<first;i++) html+='<div></div>';
-            for(let d=1;d<=days;d++) html+=`<div class="day"><span>${d}</span><div class="amount">${daily[d-1]>0?formatMoney(daily[d-1]):''}</div></div>`;
-            html+='</div><div class="week-summary">📅 每周开销：<br>'; let sum=0,start=1;
-            for(let d=1;d<=days;d++){sum+=daily[d-1]; if((d+first-1)%7===6||d===days){html+=`${start}日-${d}日：${formatMoney(sum)}<br>`;sum=0;start=d+1;}}
-            html+=`💰 本月总计：${formatMoney(daily.reduce((a,b)=>a+b,0))}</div>`;
-            document.getElementById('calendarContainer').innerHTML=html; document.getElementById('calendarModal').classList.add('active');
-        }
+        function renderRecords() { const data=getMonthData(currentMonth); let records=[...data.records]; const cat=document.getElementById('filterCat').value,date=document.getElementById('filterDate').value,sort=document.getElementById('sortBy').value; if(cat) records=records.filter(r=>r.category===cat); if(date) records=records.filter(r=>r.date===date); if(sort==='date-desc') records.sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id); else if(sort==='date-asc') records.sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id); else if(sort==='amount-desc') records.sort((a,b)=>b.amount-a.amount); else if(sort==='amount-asc') records.sort((a,b)=>a.amount-b.amount); document.getElementById('recordCount').textContent=`（共${records.length}笔）`; document.getElementById('recordsBody').innerHTML=records.map(r=>`<tr><td>${r.date}</td><td><span class="cat-tag">${r.category}</span></td><td>${r.payment}</td><td>${formatMoney(r.amount)}</td><td>${r.note||'-'}</td><td><button class="btn-sm btn-danger" onclick="deleteRecord(${r.id},'${r.date.substring(0,7)}')">🗑️</button></td></tr>`).join(''); }
+        function openCalendar() { const data=getMonthData(currentMonth); const [y,m]=currentMonth.split('-').map(Number); const days=new Date(y,m,0).getDate(),first=new Date(y,m-1,1).getDay(); const daily=new Array(days).fill(0); data.records.forEach(r=>{const d=parseInt(r.date.split('-')[2]); if(d) daily[d-1]+=r.amount;}); let html='<div class="calendar-grid">'; ['日','一','二','三','四','五','六'].forEach(d=>html+=`<div style="font-weight:600;">${d}</div>`); for(let i=0;i<first;i++) html+='<div></div>'; for(let d=1;d<=days;d++) html+=`<div class="day"><span>${d}</span><div class="amount">${daily[d-1]>0?formatMoney(daily[d-1]):''}</div></div>`; html+='</div><div class="week-summary">📅 每周开销：<br>'; let sum=0,start=1; for(let d=1;d<=days;d++){sum+=daily[d-1]; if((d+first-1)%7===6||d===days){html+=`${start}日-${d}日：${formatMoney(sum)}<br>`;sum=0;start=d+1;}} html+=`💰 本月总计：${formatMoney(daily.reduce((a,b)=>a+b,0))}</div>`; document.getElementById('calendarContainer').innerHTML=html; document.getElementById('calendarModal').classList.add('active'); }
         function closeCalendar(){document.getElementById('calendarModal').classList.remove('active');}
         function toggleNotes(id){document.getElementById(id).classList.toggle('show');}
         function toggleRecordsTable(){const el=document.getElementById('recordsTableWrapper');el.style.display=el.style.display==='none'?'block':'none';}
@@ -437,118 +345,128 @@
         function closeDepositModal(){document.getElementById('depositModal').classList.remove('active');}
         function saveIncome(){const income=+document.getElementById('monthlyIncome').value||0;getMonthData(currentMonth).income=income;saveData();updateDepositDisplay();showToast('收入已保存');}
 
-        // ========== 3. 粒子系统 (设备自适应，电脑端功能完整保留) ==========
-        const bgCanvas=document.getElementById('bgCanvas'),bgCtx=bgCanvas.getContext('2d');
-        const trailCanvas=document.getElementById('trailCanvas'),trailCtx=trailCanvas.getContext('2d');
-        const totalCanvas=document.getElementById('totalParticleCanvas'),totalCtx=totalCanvas.getContext('2d');
-        const CENTER_X=window.innerWidth/2,CENTER_Y=window.innerHeight/2;
-        let heartPhase=0; const FOCAL_LENGTH=420;
-        let starParticles=[], heartParticles=[];
+        // ========== 界面风格管理 ==========
+        let currentMode = localStorage.getItem('star_ledger_mode') || 'night';
+        let particleColor = localStorage.getItem('star_ledger_particle_color') || 'pink';
+        let ballColor = localStorage.getItem('star_ledger_ball_color') || 'blue';
 
-        function resizeCanvases(){bgCanvas.width=window.innerWidth;bgCanvas.height=window.innerHeight;trailCanvas.width=window.innerWidth;trailCanvas.height=window.innerHeight;}
-        window.addEventListener('resize',()=>{resizeCanvases();initStars();initHeart();});
+        const colorPresets = {
+            pink: '255,100,150',
+            blue: '100,180,255',
+            white: '255,255,255',
+            gold: '255,200,100',
+            purple: '180,130,255',
+            romantic: '210,175,210',
+        };
 
-        function initStars(){
-            starParticles.length=0;
-            const n = window.NUM_STARS || 600;
-            for(let i=0;i<n;i++){
-                const d=Math.random(),s=0.4+d*1.4,a=0.5+d*0.5,ang=Math.random()*Math.PI*2,r=250+d*750;
-                starParticles.push({ba:ang,r,depth:d,size:s,alpha:a,x:CENTER_X+Math.cos(ang)*r,y:CENTER_Y+Math.sin(ang)*r*0.7,sp:0.0003+d*0.0005});
+        function applyMode(mode) {
+            currentMode = mode;
+            localStorage.setItem('star_ledger_mode', mode);
+            document.body.className = mode + (window.IS_MOBILE ? '' : ' cursor-active');
+            document.querySelectorAll('.mode-selector button').forEach(btn => { btn.classList.toggle('active', btn.dataset.mode === mode); });
+            const colorPicker = document.getElementById('colorPickerContainer');
+            if (mode === 'night' || mode === 'day') { colorPicker.style.display = 'block'; renderColorOptions(mode === 'night' ? 'particle' : 'ball'); }
+            else { colorPicker.style.display = 'none'; }
+            if (mode === 'night') { initHeart(); initStars(); }
+            else if (mode === 'day') { initBalls(); }
+            else { heartParticles.length = 0; starParticles.length = 0; balls.length = 0; }
+        }
+
+        function setParticleColor(colorKey) { particleColor = colorKey; localStorage.setItem('star_ledger_particle_color', colorKey); if (currentMode === 'night') initHeart(); renderColorOptions('particle'); }
+        function setBallColor(colorKey) { ballColor = colorKey; localStorage.setItem('star_ledger_ball_color', colorKey); if (currentMode === 'day') initBalls(); renderColorOptions('ball'); }
+
+        function renderColorOptions(type) {
+            const container = document.getElementById('particleColorOptions');
+            const colors = type === 'particle' ? ['romantic', 'pink', 'blue', 'white', 'gold', 'purple'] : ['blue', 'pink', 'gold', 'purple', 'white'];
+            const active = type === 'particle' ? particleColor : ballColor;
+            container.innerHTML = colors.map(c => `<div class="color-dot ${c === active ? 'active' : ''}" style="background: rgb(${colorPresets[c]})" onclick="${type === 'particle' ? 'setParticleColor' : 'setBallColor'}('${c}')"></div>`).join('');
+        }
+
+        function openSettingsModal() {
+            document.getElementById('settingsModal').classList.add('active');
+            document.querySelectorAll('.mode-selector button').forEach(b => b.classList.toggle('active', b.dataset.mode === currentMode));
+            if (currentMode === 'night' || currentMode === 'day') { document.getElementById('colorPickerContainer').style.display = 'block'; renderColorOptions(currentMode === 'night' ? 'particle' : 'ball'); }
+            else document.getElementById('colorPickerContainer').style.display = 'none';
+        }
+        function closeSettingsModal() { document.getElementById('settingsModal').classList.remove('active'); }
+        document.querySelectorAll('.mode-selector button').forEach(b => b.addEventListener('click', () => applyMode(b.dataset.mode)));
+
+        // ========== 粒子系统 ==========
+        const bgCanvas = document.getElementById('bgCanvas'), bgCtx = bgCanvas.getContext('2d');
+        const trailCanvas = document.getElementById('trailCanvas'), trailCtx = trailCanvas.getContext('2d');
+        const totalCanvas = document.getElementById('totalParticleCanvas'), totalCtx = totalCanvas.getContext('2d');
+        const CENTER_X = window.innerWidth / 2, CENTER_Y = window.innerHeight / 2;
+        let heartPhase = 0; const FOCAL_LENGTH = 420;
+        let starParticles = [], heartParticles = [];
+        let balls = [], NUM_BALLS = 50;
+
+        function resizeCanvases() { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; trailCanvas.width = window.innerWidth; trailCanvas.height = window.innerHeight; }
+        window.addEventListener('resize', () => { resizeCanvases(); if (currentMode === 'night') { initStars(); initHeart(); } else if (currentMode === 'day') initBalls(); });
+
+        function initStars() { starParticles.length = 0; if (currentMode !== 'night') return; const n = window.NUM_STARS || 600; for (let i = 0; i < n; i++) { const d = Math.random(), s = 0.4 + d * 1.4, a = 0.5 + d * 0.5, ang = Math.random() * Math.PI * 2, r = 250 + d * 750; starParticles.push({ ba: ang, r, depth: d, size: s, alpha: a, x: CENTER_X + Math.cos(ang) * r, y: CENTER_Y + Math.sin(ang) * r * 0.7, sp: 0.0003 + d * 0.0005 }); } }
+        function isInsideHeart(x, y, z) { const x2 = x * x, y2 = y * y, z2 = z * z; const a = x2 + 2.25 * y2 + z2 - 1; return a * a * a - x2 * z2 * z - (9 / 80) * y2 * z2 * z <= 0; }
+
+        function initHeart() {
+            heartParticles.length = 0; if (currentMode !== 'night') return;
+            const n = window.NUM_HEART || 12000, HEART_SCALE = 35, RANGE = 2.5;
+            const [r, g, b] = colorPresets[particleColor].split(',');
+            let count = 0; const maxA = n * 6;
+            while (count < n && maxA > 0) {
+                const x = (Math.random() * 2 - 1) * RANGE, y = (Math.random() * 2 - 1) * RANGE, z = (Math.random() * 2 - 1) * RANGE;
+                if (isInsideHeart(x, y, z)) {
+                    const px = x * HEART_SCALE, py = -y * HEART_SCALE, pz = z * HEART_SCALE;
+                    const sa = Math.random() * Math.PI * 2, sd = 350 + Math.random() * 500;
+                    const brightness = 0.7 + 0.3 * (1 - (pz + 50) / 150);
+                    heartParticles.push({ bx: px, by: py, bz: pz, sx: CENTER_X + Math.cos(sa) * sd, sy: CENTER_Y + Math.sin(sa) * sd * 0.7, sz: (Math.random() - 0.5) * 550, size: Math.random() * 2.5 + 2, color: `${r},${g},${b}`, alpha: 0.5 + Math.random() * 0.25 * brightness });
+                    count++;
+                }
             }
+            while (heartParticles.length < n) { const x = (Math.random() * 2 - 1) * RANGE, y = (Math.random() * 2 - 1) * RANGE, z = (Math.random() * 2 - 1) * RANGE; const px = x * HEART_SCALE, py = -y * HEART_SCALE, pz = z * HEART_SCALE; heartParticles.push({ bx: px, by: py, bz: pz, sx: CENTER_X + (Math.random() - 0.5) * 1100, sy: CENTER_Y + (Math.random() - 0.5) * 1100, sz: (Math.random() - 0.5) * 550, size: Math.random() * 2.5 + 2, color: `${r},${g},${b}`, alpha: 0.5 + Math.random() * 0.25 }); }
         }
 
-        function isInsideHeart(x,y,z){const x2=x*x,y2=y*y,z2=z*z;const a=x2+2.25*y2+z2-1;return a*a*a-x2*z2*z-(9/80)*y2*z2*z<=0;}
+        function initBalls() { balls = []; if (currentMode !== 'day') return; const [r, g, b] = colorPresets[ballColor].split(','); for (let i = 0; i < NUM_BALLS; i++) { const z = Math.random() * 400 + 50; balls.push({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight * 0.5, z: z, vx: (Math.random() - 0.5) * 2, vy: (Math.random() * 2 + 1), vz: (Math.random() - 0.5) * 1.5, radius: 12 + z * 0.07, color: `${r},${g},${b}`, baseAlpha: 0.5 + (z / 500) * 0.4 }); } }
+        function updateBalls() { const gravity = 0.2, bounce = 0.8; balls.forEach(b => { b.vy += gravity; b.y += b.vy; b.x += b.vx; b.z += b.vz; if (b.x < 0 || b.x > window.innerWidth) { b.vx *= -1; b.x = Math.max(0, Math.min(window.innerWidth, b.x)); } if (b.y < 0 || b.y > window.innerHeight) { b.vy *= -bounce; b.y = Math.max(0, Math.min(window.innerHeight, b.y)); } if (b.z < 50 || b.z > 450) { b.vz *= -1; b.z = Math.max(50, Math.min(450, b.z)); } b.radius = 12 + b.z * 0.07; }); }
 
-        function initHeart(){
-            heartParticles.length=0;
-            const n = window.NUM_HEART || 12000, HEART_SCALE=30, RANGE=2.3;
-            let count=0; const maxA=n*6;
-            while(count<n&&maxA>0){
-                const x=(Math.random()*2-1)*RANGE,y=(Math.random()*2-1)*RANGE,z=(Math.random()*2-1)*RANGE;
-                if(isInsideHeart(x,y,z)){const px=x*HEART_SCALE,py=-y*HEART_SCALE,pz=z*HEART_SCALE;const sa=Math.random()*Math.PI*2,sd=350+Math.random()*500;heartParticles.push({bx:px,by:py,bz:pz,sx:CENTER_X+Math.cos(sa)*sd,sy:CENTER_Y+Math.sin(sa)*sd*0.7,sz:(Math.random()-0.5)*550,size:Math.random()*1.6+1,color:`255,${Math.floor(70+Math.random()*130)},${Math.floor(80+Math.random()*130)}`,alpha:0.8+Math.random()*0.2});count++;}
-            }
-            while(heartParticles.length<n){const x=(Math.random()*2-1)*RANGE,y=(Math.random()*2-1)*RANGE,z=(Math.random()*2-1)*RANGE;const px=x*HEART_SCALE,py=-y*HEART_SCALE,pz=z*HEART_SCALE;heartParticles.push({bx:px,by:py,bz:pz,sx:CENTER_X+(Math.random()-0.5)*1100,sy:CENTER_Y+(Math.random()-0.5)*1100,sz:(Math.random()-0.5)*550,size:Math.random()*1.6+1,color:`255,${Math.floor(70+Math.random()*130)},${Math.floor(80+Math.random()*130)}`,alpha:0.8+Math.random()*0.2});}
+        function drawBackground() {
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+            if (currentMode === 'night') {
+                starParticles.forEach(s => { s.ba += s.sp; const x = CENTER_X + Math.cos(s.ba) * s.r, y = CENTER_Y + Math.sin(s.ba) * s.r * 0.7; bgCtx.beginPath(); bgCtx.arc(x, y, s.size, 0, Math.PI * 2); bgCtx.fillStyle = `rgba(255,255,255,${s.alpha})`; bgCtx.fill(); });
+                const dist = Math.hypot(window.mouseX - CENTER_X, window.mouseY - CENTER_Y), maxDist = Math.max(window.innerWidth, window.innerHeight) * 0.9, scatter = Math.min(1, dist / maxDist);
+                heartPhase += 0.018;
+                const beat = 1 + 0.12 * Math.sin(heartPhase * 1.5) * Math.abs(Math.sin(heartPhase * 0.7));
+                const floatY = 4 * Math.sin(heartPhase * 0.3);
+                heartParticles.forEach(p => {
+                    const mx = p.bx + (p.sx - CENTER_X - p.bx) * scatter, my = p.by + (p.sy - CENTER_Y - p.by) * scatter + floatY, mz = p.bz + (p.sz - p.bz) * scatter;
+                    const s = FOCAL_LENGTH / (FOCAL_LENGTH + mz), px = CENTER_X + mx * s * beat, py = CENTER_Y + my * s * beat, ps = p.size * s * (0.88 + 0.22 * Math.sin(heartPhase + p.bx * 0.5));
+                    const da = 0.45 + 0.45 * (1 - (mz + 45) / 155);
+                    bgCtx.beginPath(); bgCtx.arc(px, py, ps, 0, Math.PI * 2); bgCtx.fillStyle = `rgba(${p.color},${p.alpha * da})`; bgCtx.fill();
+                });
+            } else if (currentMode === 'day') {
+                bgCtx.fillStyle = '#f5f7fa'; bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+                updateBalls();
+                balls.forEach(b => { const scale = FOCAL_LENGTH / (FOCAL_LENGTH + b.z); const px = CENTER_X + (b.x - CENTER_X) * scale, py = CENTER_Y + (b.y - CENTER_Y) * scale; const r = b.radius * scale, alpha = b.baseAlpha * (0.6 + 0.4 * (1 - (b.z - 50) / 400)); const grad = bgCtx.createRadialGradient(px, py, r * 0.2, px, py, r); grad.addColorStop(0, `rgba(${b.color},${alpha})`); grad.addColorStop(1, `rgba(${b.color},0)`); bgCtx.beginPath(); bgCtx.arc(px, py, r, 0, Math.PI * 2); bgCtx.fillStyle = grad; bgCtx.fill(); });
+            } else if (currentMode === 'simple-white') { bgCtx.fillStyle = '#fff'; bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height); }
+            else if (currentMode === 'simple-black') { bgCtx.fillStyle = '#000'; bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height); }
         }
 
-        function drawBackground(){
-            bgCtx.clearRect(0,0,bgCanvas.width,bgCanvas.height);
-            starParticles.forEach(s=>{s.ba+=s.sp;const x=CENTER_X+Math.cos(s.ba)*s.r,y=CENTER_Y+Math.sin(s.ba)*s.r*0.7;bgCtx.beginPath();bgCtx.arc(x,y,s.size,0,Math.PI*2);bgCtx.fillStyle=`rgba(255,255,255,${s.alpha})`;bgCtx.fill();});
-            const dist=Math.hypot(window.mouseX-CENTER_X,window.mouseY-CENTER_Y),maxDist=Math.max(window.innerWidth,window.innerHeight)*0.9,scatter=Math.min(1,dist/maxDist);
-            heartPhase+=0.018;
-            const beat=1+0.12*Math.sin(heartPhase*1.5)*Math.abs(Math.sin(heartPhase*0.7));
-            const floatY=4*Math.sin(heartPhase*0.3);
-            heartParticles.forEach(p=>{
-                const mx=p.bx+(p.sx-CENTER_X-p.bx)*scatter,my=p.by+(p.sy-CENTER_Y-p.by)*scatter+floatY,mz=p.bz+(p.sz-p.bz)*scatter;
-                const s=FOCAL_LENGTH/(FOCAL_LENGTH+mz),px=CENTER_X+mx*s*beat,py=CENTER_Y+my*s*beat,ps=p.size*s*(0.88+0.22*Math.sin(heartPhase+p.bx*0.5));
-                const da=0.5+0.5*(1-(mz+45)/155);
-                bgCtx.beginPath();bgCtx.arc(px,py,ps,0,Math.PI*2);bgCtx.fillStyle=`rgba(${p.color},${p.alpha*da})`;bgCtx.fill();
-            });
-        }
+        const trailParticles = [];
+        function emitTrail(x, y) { if (currentMode === 'simple-white' || currentMode === 'simple-black') return; for (let i = 0; i < 3; i++) trailParticles.push({ x: x + (Math.random() - 0.5) * 10, y: y + (Math.random() - 0.5) * 10, size: Math.random() * 2 + 0.8, life: 1, color: Math.random() < 0.4 ? '255,240,200' : '255,255,255' }); }
+        function updateTrail() { if (currentMode === 'simple-white' || currentMode === 'simple-black') return; trailCtx.clearRect(0, 0, trailCanvas.width, trailCanvas.height); for (let i = trailParticles.length - 1; i >= 0; i--) { const p = trailParticles[i]; p.life -= 0.03; if (p.life <= 0) { trailParticles.splice(i, 1); continue; } trailCtx.beginPath(); trailCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2); trailCtx.fillStyle = `rgba(${p.color},${p.life * 0.65})`; trailCtx.fill(); } while (trailParticles.length > 80) trailParticles.shift(); }
+        const burstParticles = [];
+        function triggerBurstAtElement(el) { if (!el) return; const r = el.getBoundingClientRect(); const x = r.left + r.width / 2, y = r.top + r.height / 2; for (let i = 0; i < 35; i++) { const a = Math.random() * Math.PI * 2, sp = 2 + Math.random() * 3.5; burstParticles.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 1, size: Math.random() * 2.5 + 1, color: Math.random() < 0.5 ? '255,220,100' : '255,255,200' }); } }
+        function updateBurst() { for (let i = burstParticles.length - 1; i >= 0; i--) { const p = burstParticles[i]; p.x += p.vx; p.y += p.vy; p.life -= 0.035; if (p.life <= 0) { burstParticles.splice(i, 1); continue; } bgCtx.beginPath(); bgCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2); bgCtx.fillStyle = `rgba(${p.color},${p.life})`; bgCtx.fill(); } }
+        function drawTotalParticles(amount) { totalCtx.clearRect(0, 0, 500, 80); totalCtx.font = 'bold 34px sans-serif'; totalCtx.fillStyle = '#fff'; totalCtx.textAlign = 'center'; totalCtx.fillText(`本月总开销 ${formatMoney(amount)}`, 250, 50); }
 
-        // 拖尾 & 爆发
-        const trailParticles=[];
-        function emitTrail(x,y){
-            for(let i=0;i<3;i++)trailParticles.push({x:x+(Math.random()-0.5)*10,y:y+(Math.random()-0.5)*10,size:Math.random()*2+0.8,life:1,color:Math.random()<0.4?'255,240,200':'255,255,255'});
-        }
-        function updateTrail(){trailCtx.clearRect(0,0,trailCanvas.width,trailCanvas.height);for(let i=trailParticles.length-1;i>=0;i--){const p=trailParticles[i];p.life-=0.03;if(p.life<=0){trailParticles.splice(i,1);continue;}trailCtx.beginPath();trailCtx.arc(p.x,p.y,p.size,0,Math.PI*2);trailCtx.fillStyle=`rgba(${p.color},${p.life*0.65})`;trailCtx.fill();}while(trailParticles.length>80)trailParticles.shift();}
-        const burstParticles=[];
-        function triggerBurstAtElement(el){if(!el)return;const r=el.getBoundingClientRect();const x=r.left+r.width/2,y=r.top+r.height/2;for(let i=0;i<35;i++){const a=Math.random()*Math.PI*2,sp=2+Math.random()*3.5;burstParticles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1,size:Math.random()*2.5+1,color:Math.random()<0.5?'255,220,100':'255,255,200'});}}
-        function updateBurst(){for(let i=burstParticles.length-1;i>=0;i--){const p=burstParticles[i];p.x+=p.vx;p.y+=p.vy;p.life-=0.035;if(p.life<=0){burstParticles.splice(i,1);continue;}bgCtx.beginPath();bgCtx.arc(p.x,p.y,p.size,0,Math.PI*2);bgCtx.fillStyle=`rgba(${p.color},${p.life})`;bgCtx.fill();}}
-        function drawTotalParticles(amount){totalCtx.clearRect(0,0,500,80);totalCtx.font='bold 34px sans-serif';totalCtx.fillStyle='#fff';totalCtx.textAlign='center';totalCtx.fillText(`本月总开销 ${formatMoney(amount)}`,250,50);}
-
-        function animate(){
-            drawBackground();
-            updateBurst();
-            updateTrail();
-            requestAnimationFrame(animate);
-        }
+        function animate() { drawBackground(); updateBurst(); updateTrail(); requestAnimationFrame(animate); }
         requestAnimationFrame(animate);
 
-        // 交互监听 (电脑端完整保留鼠标聚散，手机端触摸)
-        if (!window.IS_MOBILE) {
-            document.addEventListener('mousemove', (e) => {
-                window.mouseX = e.clientX;
-                window.mouseY = e.clientY;
-                const cur = document.getElementById('customCursor');
-                cur.style.left = e.clientX + 'px';
-                cur.style.top = e.clientY + 'px';
-                emitTrail(e.clientX, e.clientY);
-            });
-            document.addEventListener('mousedown', () => document.getElementById('customCursor').classList.add('clicking'));
-            document.addEventListener('mouseup', () => document.getElementById('customCursor').classList.remove('clicking'));
-        } else {
-            document.addEventListener('touchmove', (e) => {
-                if (e.touches.length > 0) {
-                    window.mouseX = e.touches[0].clientX;
-                    window.mouseY = e.touches[0].clientY;
-                    emitTrail(window.mouseX, window.mouseY);
-                }
-            }, { passive: true });
-        }
+        if (!window.IS_MOBILE) { document.addEventListener('mousemove', (e) => { window.mouseX = e.clientX; window.mouseY = e.clientY; const cur = document.getElementById('customCursor'); cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px'; emitTrail(e.clientX, e.clientY); }); document.addEventListener('mousedown', () => document.getElementById('customCursor').classList.add('clicking')); document.addEventListener('mouseup', () => document.getElementById('customCursor').classList.remove('clicking')); }
+        else { document.addEventListener('touchmove', (e) => { if (e.touches.length > 0) { window.mouseX = e.touches[0].clientX; window.mouseY = e.touches[0].clientY; emitTrail(window.mouseX, window.mouseY); } }, { passive: true }); }
+        document.addEventListener('click', (e) => { const cx = e.touches ? e.touches[0].clientX : e.clientX, cy = e.touches ? e.touches[0].clientY : e.clientY; const ripple = document.createElement('div'); ripple.className = 'ripple'; ripple.style.left = cx + 'px'; ripple.style.top = cy + 'px'; document.body.appendChild(ripple); setTimeout(() => ripple.remove(), 700); });
 
-        document.addEventListener('click', (e) => {
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            const ripple = document.createElement('div');
-            ripple.className = 'ripple';
-            ripple.style.left = clientX + 'px';
-            ripple.style.top = clientY + 'px';
-            document.body.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 700);
-        });
+        document.getElementById('randomLine').textContent = ["🌸 好好爱自己，是终生浪漫的开始。", "✨ 你值得世间所有美好。", "🌙 每一天都是新的画布。", "💖 别忘了，你也是自己的光。", "🌿 慢慢来，会好的，你又不差。", "🕊️ 爱自己，是生命中最温柔的革命。", "🌟 你是银河赠予的糖。", "🌷 先取悦自己，再照顾人生。"][Math.floor(Math.random() * 8)];
 
-        // 鼓励语
-        document.getElementById('randomLine').textContent=["🌸 好好爱自己，是终生浪漫的开始。","✨ 你值得世间所有美好。","🌙 每一天都是新的画布。","💖 别忘了，你也是自己的光。","🌿 慢慢来，会好的，你又不差。","🕊️ 爱自己，是生命中最温柔的革命。","🌟 你是银河赠予的糖。","🌷 先取悦自己，再照顾人生。"][Math.floor(Math.random()*8)];
-
-        window.onload = () => {
-            resizeCanvases();
-            initStars();
-            initHeart();
-            loadData();
-            document.getElementById('recDate').value = new Date().toISOString().slice(0,10);
-            updateCatSelects();
-            renderAll();
-        };
+        window.onload = () => { resizeCanvases(); applyMode(currentMode); loadData(); document.getElementById('recDate').value = new Date().toISOString().slice(0, 10); updateCatSelects(); renderAll(); };
     </script>
 </body>
 </html>
